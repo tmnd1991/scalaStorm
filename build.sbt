@@ -2,6 +2,8 @@ name := "scala-storm"
 
 version := "1.0"
 
+scalaVersion := "2.11.2"
+
 organization := "com.github.velvia"
 
 resolvers += "clojars" at "http://clojars.org/repo/"
