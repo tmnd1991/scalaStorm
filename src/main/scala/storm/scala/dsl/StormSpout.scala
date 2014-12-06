@@ -1,4 +1,7 @@
-// Copyright (c) 2011 Evan Chan
+/**
+ * @author Evan Chan
+ * @version 2011
+ */
 
 package storm.scala.dsl
 
@@ -16,7 +19,7 @@ abstract class StormSpout(val streamToFields: collection.Map[String, List[String
   var _context:TopologyContext = _
   var _collector:SpoutOutputCollector = _
 
-  // A constructor for the common case when you just want to output to the default stream
+  /** A constructor for the common case when you just want to output to the default stream*/
   def this(outputFields: List[String], distributed: Boolean = false) = this(collection.Map("default" -> outputFields), distributed)
 
   def open(conf: Map[_, _], context: TopologyContext, collector: SpoutOutputCollector) = {
@@ -29,25 +32,26 @@ abstract class StormSpout(val streamToFields: collection.Map[String, List[String
     _cleanup()
   }
 
-  // nextTuple needs to be defined by each spout inheriting from here
-  //def nextTuple() {}
+  /**nextTuple needs to be defined by each spout inheriting from here
+      def nextTuple() {} */
 
   def declareOutputFields(declarer: OutputFieldsDeclarer) =
     streamToFields foreach { case(stream, fields) =>
       declarer.declareStream(stream, new Fields(fields:_*))
     }
 
-  // DSL for emit and emitDirect.
-  // [toStream(<streamId>)] emit (val1, val2, ..)
-  // [using][msgId <messageId>] [toStream <streamId>] emit (val1, val2, ...)
-  // [using][msgId <messageId>] [toStream <streamId>] emitDirect (taskId, val1, val2, ...)
+      /** DSL for emit and emitDirect.
+        * [toStream(<streamId>)] emit (val1, val2, ..)
+        * [using][msgId <messageId>] [toStream <streamId>] emit (val1, val2, ...)
+        * [using][msgId <messageId>] [toStream <streamId>] emitDirect (taskId, val1, val2, ...)
+        */
   def using = this
 
   def msgId(messageId: Any) = new MessageIdEmitter(_collector, messageId.asInstanceOf[AnyRef])
 
   def toStream(streamId: String) = new StreamEmitter(_collector, streamId)
 
-  // Autoboxing is done for both emit and emitDirect
+  /** Autoboxing is done for both emit and emitDirect */
   def emit(values: Any*) = _collector.emit(values.toList.map { _.asInstanceOf[AnyRef] })
 
   def emitDirect(taskId: Int, values: Any*) = _collector.emitDirect(taskId,

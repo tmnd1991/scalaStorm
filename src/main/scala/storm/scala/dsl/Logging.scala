@@ -3,7 +3,9 @@ package storm.scala.dsl
 import org.slf4j.{LoggerFactory, Logger}
 
 /**
- * Created by tmnd on 10/11/14.
+ * Trait that adds logging capability to a SetupFunc implementer
+ * @author Antonio Murgia
+ * @version 06/12/2014
  */
 trait Logging extends SetupFunc{
   protected var logger : Logger = _
