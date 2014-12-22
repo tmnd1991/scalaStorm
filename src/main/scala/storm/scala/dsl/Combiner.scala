@@ -30,7 +30,7 @@ class TypedTopologyBuilder extends TopologyBuilder{
    */
   def setBolt[T <: Product](spoutName: String, spout: TypedSpout[T],
                             boltName: String, bolt: TypedBolt[T, _],
-                            parallelismHint: Number = Nil): BoltDeclarer = {
+                            parallelismHint: Number = null): BoltDeclarer = {
     if (!_spouts.contains(spoutName)){
       setSpout(spoutName, spout)
       _spouts(spoutName) = spout
@@ -64,7 +64,7 @@ class TypedTopologyBuilder extends TopologyBuilder{
    */
   def setBolt[T <: Product](emitterName : String, emitter : TypedBolt[_,T],
                             receiverName : String, receiver : TypedBolt[T,_],
-                            parallelismHint: Number = Nil) : BoltDeclarer = {
+                            parallelismHint: Number = null) : BoltDeclarer = {
     setBolt(receiverName, receiver, parallelismHint)
   }
 }
