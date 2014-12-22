@@ -83,8 +83,36 @@ class StormTuple(collector: OutputCollector, val tuple:Tuple)
     val matchFunc = f orElse lastResort
     matchFunc(tuple.getValues.asScala: Seq[Any])
   }
-}
 
+  def asScala : Product = {
+    val l = tuple.getValues
+    l.size() match{
+      case 1  => new Tuple1(l(0))
+      case 2  => (l(0),l(1))
+      case 3  => (l(0),l(1),l(2))
+      case 4  => (l(0),l(1),l(2),l(3))
+      case 5  => (l(0),l(1),l(2),l(3),l(4))
+      case 6  => (l(0),l(1),l(2),l(3),l(4),l(5))
+      case 7  => (l(0),l(1),l(2),l(3),l(4),l(5),l(6))
+      case 8  => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7))
+      case 9  => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8))
+      case 10 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9))
+      case 11 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10))
+      case 12 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11))
+      case 13 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12))
+      case 14 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13))
+      case 15 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13),l(14))
+      case 16 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13),l(14),l(15))
+      case 17 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13),l(14),l(15),l(16))
+      case 18 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13),l(14),l(15),l(16),l(17))
+      case 19 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13),l(14),l(15),l(16),l(17),l(18))
+      case 20 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13),l(14),l(15),l(16),l(17),l(18),l(19))
+      case 21 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13),l(14),l(15),l(16),l(17),l(18),l(19),l(20))
+      case 22 => (l(0),l(1),l(2),l(3),l(4),l(5),l(6),l(7),l(8),l(9),l(10),l(11),l(12),l(13),l(14),l(15),l(16),l(17),l(18),l(19),l(20),l(21))
+      case _  => throw new RuntimeException("Unhandled tuple " + tuple)
+    }
+  }
+}
 
 /** A class/DSL for emitting anchored on multiple tuples
  * multi-anchored emit:
