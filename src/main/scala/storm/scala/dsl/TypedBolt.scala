@@ -13,5 +13,8 @@ abstract class TypedBolt[I<:Product,O<:Product](strings : String*) extends Storm
         using anchor tuple emit(e.productIterator.toList)
       tuple.ack
     }
+    else{
+      tuple.fail
+    }
   }
 }
