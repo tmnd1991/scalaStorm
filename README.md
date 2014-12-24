@@ -1,7 +1,7 @@
 scalaStorm
 ==========
 
-my fork of velvia scalaStorm
+my fork of velvia scalaStorm (http://github.com/velvia/ScalaStorm)
 
 added Typesafety on top of Bolts and Tuples, using TypedSpout, TypedBolt and NonEmittingTypedBolt
 
