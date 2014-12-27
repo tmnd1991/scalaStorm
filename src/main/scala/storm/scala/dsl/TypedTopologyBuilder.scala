@@ -6,6 +6,7 @@ package storm.scala.dsl
  */
 import java.util.Date
 import backtype.storm.topology.{IRichSpout, SpoutDeclarer, BoltDeclarer, TopologyBuilder}
+import backtype.storm.tuple.Tuple
 
 /**
  * Extension over Storm's TopologyBuilder,
@@ -92,44 +93,7 @@ class TypedTopologyBuilder extends TopologyBuilder{
                             receiverName : String, receiver : TypedBolt[T,_]) : BoltDeclarer =
     setBolt[T](emitterName, emitter, receiverName, receiver, null)
 
-  /**
-   *
-   * @param spoutName the name of the spout that will be the input to the bolt
-   * @param spout     the spout that will be the input to the bolt, it can be already register or not.
-   * @param boltName  the name of the bolt (unique)
-   * @param bolt      the bolt that will receive data from the spout
-   * @param parallelismHint parallelism hint
-   * @tparam T        the Type of the exchanged data for compiletime typesafety checks
-   * @return          a BoltDeclarer as it would have returned a TopologyBuilder
-   */
-  def setBolt[T <: Product](spoutName: String, spout: TypedSpout[T],
-                            boltName: String, bolt: NonEmittingTypedBolt[T],
-                            parallelismHint : Number): BoltDeclarer =
-    super.setBolt(boltName,bolt,parallelismHint)
 
-  def setBolt[T <: Product](spoutName: String, spout: TypedSpout[T],
-                            boltName: String, bolt: NonEmittingTypedBolt[T]) : BoltDeclarer =
-    super.setBolt(spoutName,bolt,null)
-
-  /**
-   *
-   * @param emitterName   the name of the emitting bolt (unique)
-   * @param emitter       the bolt that will emit data to the receiver bolt, IT MUST BE ALREADY REGISTERED
-   * @param receiverName  the name of the receiving bolt (unique)
-   * @param receiver      the bolt that will receive date from the emmitting bolt
-   * @param parallelismHint the parallelism of the bolt
-   * @tparam T            the Type of the exchanged data for compiletime typesafety checks
-   * @return              a BoltDeclarer as it would have returned a TopologyBuilder
-   */
-  def setBolt[T <: Product](emitterName : String, emitter : TypedBolt[_,T],
-                            receiverName : String, receiver : NonEmittingTypedBolt[T],
-                            parallelismHint: Number) : BoltDeclarer = {
-    super.setBolt(receiverName, receiver, parallelismHint)
-  }
-  def setBolt[T <: Product](emitterName : String, emitter : TypedBolt[_,T],
-                            receiverName : String, receiver : NonEmittingTypedBolt[T]) : BoltDeclarer = {
-    super.setBolt(receiverName, receiver, null)
-  }
 }
 
 
@@ -139,7 +103,7 @@ class provaSpout extends TypedSpout[(Date,String)](false,"data","stringa") {
   }
 }
 class provaBolt extends TypedBolt[(Date,String),Tuple1[String]]("stringa") {
-  override def typedExecute(t: (Date, String)): Seq[Tuple1[String]] = {
+  override def typedExecute(t: (Date, String), st : Tuple): Unit = {
     List(Tuple1("" + t._1 + t._2))
   }
 }
