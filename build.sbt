@@ -10,8 +10,6 @@ resolvers += "clojars" at "http://clojars.org/repo/"
 
 resolvers += "clojure-releases" at "http://build.clojure.org/releases"
 
-libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.2"
-
-libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.2-incubating" % "provided" exclude("junit", "junit") withSources()
+libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.3" % "provided" exclude("junit", "junit") withSources()
 
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0" % "test"

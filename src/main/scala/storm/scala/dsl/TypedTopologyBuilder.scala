@@ -5,7 +5,7 @@ package storm.scala.dsl
  * @version 22/12/2014
  */
 import java.util.Date
-import backtype.storm.topology.{BoltDeclarer, TopologyBuilder}
+import backtype.storm.topology.{IRichSpout, SpoutDeclarer, BoltDeclarer, TopologyBuilder}
 
 /**
  * Extension over Storm's TopologyBuilder,
@@ -16,8 +16,15 @@ import backtype.storm.topology.{BoltDeclarer, TopologyBuilder}
  */
 class TypedTopologyBuilder extends TopologyBuilder{
 
-  private val _spouts = scala.collection.mutable.Map[String, TypedSpout[_]]()
-
+  private val _mySpouts = scala.collection.mutable.Map[String, TypedSpout[_]]()
+  def setSpout[T <: Product](id: String, spout: TypedSpout[T], parallelism_hint: Number) : SpoutDeclarer = {
+    _mySpouts(id) = spout
+    super.setSpout(id, spout, parallelism_hint)
+  }
+  def setSpout[T <: Product](id: String, spout: TypedSpout[T]) : SpoutDeclarer = {
+    _mySpouts(id) = spout
+    super.setSpout(id, spout, null)
+  }
   /**
    *
    * @param spoutName the name of the spout that will be the input to the bolt
@@ -31,9 +38,9 @@ class TypedTopologyBuilder extends TopologyBuilder{
   def setBolt[T <: Product](spoutName: String, spout: TypedSpout[T],
                             boltName: String, bolt: TypedBolt[T, _],
                              parallelismHint : Number): BoltDeclarer = {
-    if (!_spouts.contains(spoutName)){
+    if (!_mySpouts.contains(spoutName)){
       setSpout(spoutName, spout)
-      _spouts(spoutName) = spout
+      _mySpouts(spoutName) = spout
     }
     else{
       /*
@@ -46,15 +53,15 @@ class TypedTopologyBuilder extends TopologyBuilder{
        If you don't need/want typesafety just use the Original TopologyBuilder
        (backtype.storm.topology.TopologyBuilder).
        */
-      if (_spouts(spoutName) != spout)
+      if (_mySpouts(spoutName) != spout)
         throw new RuntimeException("Passed SpoutName is already registered but Spouts are not equals")
     }
-    setBolt(boltName, bolt, null)
+    super.setBolt(boltName, bolt, null)
   }
 
   def setBolt[T <: Product](spoutName: String, spout: TypedSpout[T],
                             boltName: String, bolt: TypedBolt[T, _]): BoltDeclarer =
-    setBolt(spoutName, spout, boltName, bolt, null)
+    setBolt[T](spoutName, spout, boltName, bolt, null)
 
   /**
    *
@@ -69,7 +76,7 @@ class TypedTopologyBuilder extends TopologyBuilder{
   def setBolt[T <: Product](emitterName : String, emitter : TypedBolt[_,T],
                             receiverName : String, receiver : TypedBolt[T,_],
                             parallelismHint: Number) : BoltDeclarer = {
-    setBolt(receiverName, receiver, parallelismHint)
+    super.setBolt(receiverName, receiver, parallelismHint)
   }
 
   /**
@@ -83,7 +90,7 @@ class TypedTopologyBuilder extends TopologyBuilder{
    */
   def setBolt[T <: Product](emitterName : String, emitter : TypedBolt[_,T],
                             receiverName : String, receiver : TypedBolt[T,_]) : BoltDeclarer =
-    setBolt(emitterName, emitter, receiverName, receiver, null)
+    setBolt[T](emitterName, emitter, receiverName, receiver, null)
 
   /**
    *
@@ -98,11 +105,11 @@ class TypedTopologyBuilder extends TopologyBuilder{
   def setBolt[T <: Product](spoutName: String, spout: TypedSpout[T],
                             boltName: String, bolt: NonEmittingTypedBolt[T],
                             parallelismHint : Number): BoltDeclarer =
-    setBolt(boltName,bolt,parallelismHint)
+    super.setBolt(boltName,bolt,parallelismHint)
 
   def setBolt[T <: Product](spoutName: String, spout: TypedSpout[T],
                             boltName: String, bolt: NonEmittingTypedBolt[T]) : BoltDeclarer =
-    setBolt(spoutName,bolt,null)
+    super.setBolt(spoutName,bolt,null)
 
   /**
    *
@@ -117,11 +124,11 @@ class TypedTopologyBuilder extends TopologyBuilder{
   def setBolt[T <: Product](emitterName : String, emitter : TypedBolt[_,T],
                             receiverName : String, receiver : NonEmittingTypedBolt[T],
                             parallelismHint: Number) : BoltDeclarer = {
-    setBolt(receiverName, receiver, parallelismHint)
+    super.setBolt(receiverName, receiver, parallelismHint)
   }
   def setBolt[T <: Product](emitterName : String, emitter : TypedBolt[_,T],
                             receiverName : String, receiver : NonEmittingTypedBolt[T]) : BoltDeclarer = {
-    setBolt(receiverName, receiver, null)
+    super.setBolt(receiverName, receiver, null)
   }
 }
 

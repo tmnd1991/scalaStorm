@@ -10,7 +10,7 @@ abstract class TypedBolt[I<:Product,O<:Product](strings : String*) extends Storm
     val list = typedExecute(tuple.asScala.asInstanceOf[I])
     if (list.nonEmpty){
       for (e <- list)
-        using anchor tuple emit(e.productIterator.toList)
+        using anchor tuple emit(e.productIterator.toList:_*)
       tuple.ack
     }
     else{
