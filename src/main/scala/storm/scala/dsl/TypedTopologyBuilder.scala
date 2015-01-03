@@ -98,8 +98,8 @@ class TypedTopologyBuilder extends TopologyBuilder{
 
 
 class provaSpout extends TypedSpout[(Date,String)](false,"data","stringa") {
-  override def nextTypedTuple: List[(Date, String)] = {
-    List((new Date(),"ciccia"))
+  override def nextTuple() = {
+    emit(new Date(),"ciccia")
   }
 }
 class provaBolt extends TypedBolt[(Date,String),Tuple1[String]]("stringa") {
