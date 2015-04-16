@@ -53,7 +53,7 @@ abstract class StormSpout(val streamToFields: collection.Map[String, List[String
 
   /** Autoboxing is done for both emit and emitDirect */
   def emit(values: Any*) = _collector.emit(values.toList.map { _.asInstanceOf[AnyRef] })
-  def emit(msgId : Int, values : Any*) = _collector.emit(values.toList.map { _.asInstanceOf[AnyRef] }, msgId)
+  def emit(msgId : Long, values : Any*) = _collector.emit(values.toList.map { _.asInstanceOf[AnyRef] }, msgId)
   def emitDirect(taskId: Int, values: Any*) = _collector.emitDirect(taskId,
     values.toList.map { _.asInstanceOf[AnyRef] })
 }
