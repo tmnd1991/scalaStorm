@@ -1,15 +1,22 @@
 name := "scala-storm"
 
-version := "2.0"
+scalaVersion := "2.11.4"
 
-scalaVersion := "2.11.2"
+crossScalaVersions := Seq("2.10.4", "2.11.4")
+
+version := "1.0"
 
 organization := "com.github.velvia"
 
-resolvers += "clojars" at "http://clojars.org/repo/"
+libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.3" % "provided" exclude("junit", "junit")
 
-resolvers += "clojure-releases" at "http://build.clojure.org/releases"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 
-libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.3" % "provided" exclude("junit", "junit") withSources()
+libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.2-incubating" % "test" exclude("junit", "junit")
 
-libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+scalacOptions ++= Seq("-feature", "-deprecation", "-Yresolve-term-conflict:package")
+
+// When doing sbt run, fork a separate process.  This is apparently needed by storm.
+fork := true
+
+resolvers += "clojars" at "https://clojars.org/repo"

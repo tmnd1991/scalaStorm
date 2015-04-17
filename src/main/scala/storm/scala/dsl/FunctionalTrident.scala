@@ -24,15 +24,15 @@ object FunctionalTrident {
   }
 
   class FunctionalStream(origStream: storm.trident.Stream) {
-    /** Example usage:
-      stream.map("sentence" -> "numwords") { _.getString(0).split(" ").length }*/
+    // Example usage:
+    // stream.map("sentence" -> "numwords") { _.getString(0).split(" ").length }
     def map(fieldMapping: (String, String))(mapFunc: TridentTuple => Any) =
       origStream.each(new Fields(fieldMapping._1),
                       new MapFuncT1(mapFunc),
                       new Fields(fieldMapping._2))
 
-    /** Example usage:
-      stream.flatMap("sentence" -> "words") { _.getString(0).split(" ") }*/
+    // Example usage:
+    // stream.flatMap("sentence" -> "words") { _.getString(0).split(" ") }
     def flatMap(fieldMapping: (String, String))(mapFunc: TridentTuple => Seq[Any]) =
       origStream.each(new Fields(fieldMapping._1),
                       new FlatMapFuncT1(mapFunc),
